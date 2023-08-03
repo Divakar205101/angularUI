@@ -1,0 +1,94 @@
+<div class="container"> 
+    <form [formGroup]="regForm"  (ngSubmit)="onSubmit()">
+        <h2 class="card-headet text-center">Registration Form</h2>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" formControlName="firstName" class="form-control" placeholder="Enter First Name" required="required">
+          <div class="form-text text-danger" *ngIf="(regForm.controls['firstName'].touched || submitted) && regForm.controls['firstName'].hasError('required')">
+            First Name is required.
+          </div>  
+        </div>
+        <br>
+          <label>Last Name</label>
+          <input type="text" formControlName="LastName" class="form-control" placeholder="Enter Last Name">
+          <div class="form-text text-danger" *ngIf="(regForm.controls['LastName'].touched || submitted)&& regForm.controls['LastName'].hasError('required')">
+            Last Name is required.
+          </div> 
+          <br>   
+          <label>Email</label>
+          <input type="text" formControlName="email" class="form-control" placeholder="Enter Email">
+          <div class="error" *ngIf="(regForm.controls['email'].touched || submitted)&& regForm.controls['email']?.['errors']">
+            <div *ngIf="regForm.controls['email']?.['errors']?.['required']">
+              Email Required
+            </div>
+            </div>
+            <br>
+          <label>Password</label>
+          <input type="text" formControlName="password" class="form-control" placeholder="Enter Password">
+          <div class="form-text text-danger" *ngIf="(regForm.controls['password'].touched || submitted)&& regForm.controls['password'].hasError('required')">
+            Password is required.
+          </div>
+          <br>
+          <label>Conform Password</label>
+          <input type="text" formControlName="cpassword" class="form-control" placeholder="Enter Conform Password">
+          <div class="form-text text-danger" *ngIf="(regForm.controls['cpassword'].touched || submitted)&& regForm.controls['cpassword'].hasError('required')">
+            Confirm Password is required.
+          </div>
+          
+          <br>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select class="form-control" id="country" (change)="onCountrySelection($event)" formControlName="country">
+              <option value="">Select a country</option>
+              <option *ngFor="let country of countries" [value]="country.countryId">{{ country.countryName }}</option>
+              
+            </select>
+            
+          </div>
+          
+          
+          
+       
+        <br>
+        <button type="button" (click)="addBank()" class="btn btn-primary"><i class="fa fa-plus-circle" aria-hidden="true"></i>Add</button>
+        <br>
+        <div class="row">
+          <div class="col-sm-12 table-responsive" formArrayName="itemRows">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th style="white-space: nowrap;padding-right: 4em;float:center"><span class="required-field"></span>product name </th>
+                  <th style="white-space: nowrap;padding-right: 4em;float:center">Price </th>
+                  <th style="white-space: nowrap;padding-right: 4em;float:center">GST </th>
+                  <th style="white-space: nowrap;padding-right: 4em;float:center">Amount </th>
+                  <th style="white-space: nowrap;padding-right: 4em;float:center">Date </th>
+                </tr>
+        
+              </thead>
+              <tbody>
+                <tr *ngFor="let itemrow of formArr?.controls; let i=index"  [formGroupName]="i">
+                
+                   <td> <input id="productname{{i}}" formControlName="productname" class="form-control reset" /></td>
+                  <td> <input id="price{{i}}" formControlName="price" class="form-control reset" (input)="calculateAmount(i)"/></td>
+                  <td> <input id="gst{{i}}" formControlName="gst" class="form-control reset" (input)="calculateAmount(i)"/></td>
+                  <td> <input id="amount{{i}}" formControlName="amount" class="form-control reset readonly" [readOnly]="true" [value]="formArr?.at(i)?.get('amount')?.value"/></td>
+                  <td> <input id="date{{i}}" formControlName="date" class="form-control reset" type="date" /></td>
+                  <td> <button *ngIf="formArr.length > 1" (click)="removeBank(i)" class="btn btn-danger"><i class="fa fa-minus-circle" aria-hidden="true"></i>Remove</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="2"></td>
+                  <td>Total Amount:</td>
+                  <td class="readonly mt-3 text-center">{{ getTotalAmount() }}</td>
+                </tr>
+              </tfoot>
+            </table>
+        </div>
+      </div>
+        <br>
+        <div>
+          <button class="btn btn-success"  type="submit">Register</button>
+        </div>
+        </form>
+    </div>
